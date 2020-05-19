@@ -143,7 +143,8 @@ Import these packages now and install them in the `src` directory of your `catki
 You’ll install these packages and create the directories as you go through the project.
 First navigate to the `src/` folder
 
--  **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
+- **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
+  
   ```
   mkdir map
   ```
