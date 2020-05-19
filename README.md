@@ -118,7 +118,7 @@ You’ll install these packages and create the directories as you go through the
 
 Your package should look like this now:
 
-```
+
     ├──                                # Official ROS packages
     |
     ├── slam_gmapping                  # gmapping_demo.launch file                   
@@ -148,4 +148,4 @@ Your package should look like this now:
     │   ├── src/add_markers.cpp
     │   ├── ...
     └──
-    ```
+   
