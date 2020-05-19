@@ -1,6 +1,9 @@
 # HOME SERVICE ROBOT
 A Home Service Robot that will autonomously map an environment and navigate to pickup and deliver objects!
 
+## Github Repository Link
+https://github.com/cynepton/home-service-robot
+
 ## Working with this project
 ### Requirements
 - Knowledge on Localization, Mapping, SLAM, ROS & Path Planning.
@@ -8,12 +11,25 @@ A Home Service Robot that will autonomously map an environment and navigate to p
   - For Ubuntu 16.04, install [ROS Kinetic Kame](http://wiki.ros.org/kinetic/Installation/Ubuntu)
   - For Ubuntu 18.04, install [ROS Melodic Morenia](http://wiki.ros.org/melodic/Installation)
 
-1. Upgrade the system, use this command in the terminal
+1. **Upgrade the system, use this command in the terminal**
    ```
    sudo apt-get update && apt-get upgrade
    ```
 
-2. 
+2. **Clone the repository**
+```
+git clone https://github.com/cynepton/home-service-robot.git
+```
+
+3. **Build the workspace**
+   In the root of the `catkin_home` directory from the terminal, run
+   ```
+   catkin make
+   ```
+   and source it
+   ```
+   source devel/setup.bash
+   ```
 
 ## Project Build Process
 
@@ -97,7 +113,22 @@ Try to launch your script in the Workspace and verify its functions!
 ### Catkin Workspace
 To program your home service robot, you will need to interface it with different ROS packages. Some of these packages are official ROS packages which offer great tools and others are packages that you’ll create. The goal of this section is to prepare and build your `catkin workspace`.
 
-Here’s the list of the official ROS packages that you will need to grab, and other packages and directories that you’ll need to create at a later stage as you go through the project. Your `catkin_ws/src` directory should look as follows:
+Here’s the list of the official ROS packages that you will need to grab, and other packages and directories that you’ll need to create at a later stage as you go through the project. 
+In your `workspaces` folder,
+
+```
+mkdir catkin_ws && cd catkin_ws
+```
+The `catkin_ws` name is arbitrary
+
+```
+mkdir src && cd src/
+```
+```
+catkin_init_workspace
+catkin_make
+```
+
 
 ### Official ROS packages
 Import these packages now and install them in the `src` directory of your `catkin workspace`. Be sure to clone the full GitHub directory and not just the package itself.
@@ -109,14 +140,38 @@ Import these packages now and install them in the `src` directory of your `catki
 
 ### Your Packages and Directories
 You’ll install these packages and create the directories as you go through the project.
+First navigate to the `src/` folder
 
 1. **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
-2. **scripts**: Inside this directory, you’ll store your shell scripts.
-3. **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
-4. **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
-5. **add_markers**: You will write a node that model the object with a marker in rviz.
 
-Your package should look like this now:
+2. **scripts**: Inside this directory, you’ll store your shell scripts.
+
+3. **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
+
+  Create the directory with:
+  
+  ```
+  cd src/
+  catkin_create_pkg pick_objects roscpp std_msgs message_generation
+  ```
+
+4. **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
+  Create the package with:
+  
+  ```
+  catkin_create_pkg pick_objects roscpp std_msgs message_generation
+  ```
+  We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I create the package with those dependencies.
+
+5. **add_markers**: You will write a node that model the object with a marker in rviz.
+  Create the package with:
+  
+  ```
+  catkin_create_pkg add_markers roscpp std_msgs message_generation
+  ```
+  We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I create the package with those dependencies.
+
+Your `catkin_ws/src` directory should look as follows:
 
 
     ├──                                # Official ROS packages
@@ -149,3 +204,8 @@ Your package should look like this now:
     │   ├── ...
     └──
    
+
+## SLAM Testing
+The next task of this project is to autonomously map the environment you designed earlier with the Building Editor in Gazebo. But before you tackle autonomous mapping, it’s important to test if you are able to manually perform SLAM by teleoperating your robot. The goal of this step is to manually test SLAM.
+
+Write a shell script test_slam.sh that will deploy a turtlebot inside your environment, control it with keyboard commands, interface it with a SLAM package, and visualize the map in rviz. We will be using turtlebot for this project but feel free to use your personalized robot to make your project stand out!
