@@ -124,6 +124,7 @@ The `catkin_ws` name is arbitrary
 ```
 mkdir src && cd src/
 ```
+Initialise the workspace and build it.
 ```
 catkin_init_workspace
 catkin_make
@@ -143,16 +144,21 @@ You’ll install these packages and create the directories as you go through the
 First navigate to the `src/` folder
 
 1. **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
+  ```
+  mkdir map
+  ```
 
 2. **scripts**: Inside this directory, you’ll store your shell scripts.
+  ```
+  mkdir scripts
+  ```
 
 3. **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
 
   Create the directory with:
   
   ```
-  cd src/
-  catkin_create_pkg pick_objects roscpp std_msgs message_generation
+  mkdir rvizConfig
   ```
 
 4. **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
