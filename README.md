@@ -17,7 +17,7 @@ A Home Service Robot that will autonomously map an environment and navigate to p
 
 ## Project Build Process
 
-## Here's a list of the steps in this project - use it to track your progress!
+### Here's a list of the steps in this project - use it to track your progress!
 
 - Simulation setup
 - SLAM Testing
@@ -92,3 +92,60 @@ Save your script file and give it `execute` pemission by `chmod +x launch.sh`. T
 After launching this script, we’ll have three open xterm terminals, and we will be able to track any errors or bugs that occur. To recap, this script will open the first terminal and launch gazebo. Then it will pause for 5 seconds and open a second terminal to launch the ROS master. It will pause for another 5 seconds and, finally, open a third terminal to launch RVIZ.
 
 Try to launch your script in the Workspace and verify its functions!
+
+## Simulation Setup
+### Catkin Workspace
+To program your home service robot, you will need to interface it with different ROS packages. Some of these packages are official ROS packages which offer great tools and others are packages that you’ll create. The goal of this section is to prepare and build your `catkin workspace`.
+
+Here’s the list of the official ROS packages that you will need to grab, and other packages and directories that you’ll need to create at a later stage as you go through the project. Your `catkin_ws/src` directory should look as follows:
+
+### Official ROS packages
+Import these packages now and install them in the `src` directory of your `catkin workspace`. Be sure to clone the full GitHub directory and not just the package itself.
+
+1. [gmapping](http://wiki.ros.org/gmapping): With the gmapping_demo.launch file, you can easily perform SLAM and build a map of the environment with a robot equipped with laser range finder sensors or RGB-D cameras.
+2. [turtlebot_teleop](http://wiki.ros.org/turtlebot_teleop): With the keyboard_teleop.launch file, you can manually control a robot using keyboard commands.
+3. [turtlebot_rviz_launchers](http://wiki.ros.org/turtlebot_rviz_launchers): With the view_navigation.launch file, you can load a preconfigured rviz workspace. You’ll save a lot of time by launching this file, because it will automatically load the robot model, trajectories, and map for you.
+4. [turtlebot_gazebo](http://wiki.ros.org/turtlebot_gazebo): With the turtlebot_world.launch you can deploy a turtlebot in a gazebo environment by linking the world file to it.
+
+### Your Packages and Directories
+You’ll install these packages and create the directories as you go through the project.
+
+1. **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
+2. **scripts**: Inside this directory, you’ll store your shell scripts.
+3. **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
+4. **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
+5. **add_markers**: You will write a node that model the object with a marker in rviz.
+
+Your package should look like this now:
+
+```
+    ├──                                # Official ROS packages
+    |
+    ├── slam_gmapping                  # gmapping_demo.launch file                   
+    │   ├── gmapping
+    │   ├── ...
+    ├── turtlebot                      # keyboard_teleop.launch file
+    │   ├── turtlebot_teleop
+    │   ├── ...
+    ├── turtlebot_interactions         # view_navigation.launch file      
+    │   ├── turtlebot_rviz_launchers
+    │   ├── ...
+    ├── turtlebot_simulator            # turtlebot_world.launch file 
+    │   ├── turtlebot_gazebo
+    │   ├── ...
+    ├──                                # Your packages and direcotries
+    |
+    ├── map                          # map files
+    │   ├── ...
+    ├── scripts                   # shell scripts files
+    │   ├── ...
+    ├──rvizConfig                      # rviz configuration files
+    │   ├── ...
+    ├──pick_objects                    # pick_objects C++ node
+    │   ├── src/pick_objects.cpp
+    │   ├── ...
+    ├──add_markers                     # add_marker C++ node
+    │   ├── src/add_markers.cpp
+    │   ├── ...
+    └──
+    ```
