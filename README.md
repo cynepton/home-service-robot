@@ -143,17 +143,17 @@ Import these packages now and install them in the `src` directory of your `catki
 You’ll install these packages and create the directories as you go through the project.
 First navigate to the `src/` folder
 
-1. **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
+-  **map**: Inside this directory, you will store your gazebo world file and the map generated from SLAM.
   ```
   mkdir map
   ```
 
-2. **scripts**: Inside this directory, you’ll store your shell scripts.
+- **scripts**: Inside this directory, you’ll store your shell scripts.
   ```
   mkdir scripts
   ```
 
-3. **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
+- **rvizConfig**: Inside this directory, you’ll store your customized rviz configuration files.
 
   Create the directory with:
   
@@ -161,7 +161,7 @@ First navigate to the `src/` folder
   mkdir rvizConfig
   ```
 
-4. **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
+- **pick_objects**: You will write a node that commands your robot to drive to the pickup and drop off zones.
   Create the package with:
   
   ```
@@ -169,7 +169,7 @@ First navigate to the `src/` folder
   ```
   We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I create the package with those dependencies.
 
-5. **add_markers**: You will write a node that model the object with a marker in rviz.
+- **add_markers**: You will write a node that model the object with a marker in rviz.
   Create the package with:
   
   ```
