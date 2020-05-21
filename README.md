@@ -14,7 +14,9 @@ https://github.com/cynepton/home-service-robot
 [turtlebot_rviz_launchers](http://wiki.ros.org/turtlebot_rviz_launchers?distro=kinetic): This package reduces the time taken to manually subscribe to each topic in RViz by launching Rviz based on a pre-configured rviz config file. 
 
 [turtlebot_gazebo](http://wiki.ros.org/turtlebot_gazebo): The turtlebot_gazebo package contains a number of launch files that allow the robot to perform localization and navigation functions.  It contains the `turtlebot_world.launch` that launches the turtlebot in a predefined gazebo world. The turtlebot can be replaced with a personalised robot, and the default world with another world file. This launch file is necessary for SLAM, localization and navigation as it provides the world and robot that the other functions would interact with.
+
 It also contains the `gmapping_demo.launch` file that launches the `slam_gmapping` node from the `gmapping` package to perform localization and mapping.
+
 Finally, it contains the `amcl_demo.launch` file that launches three nodes: 
 - **`map_server`** node from the [`map_server`](http://wiki.ros.org/map_server) package: The map_server node reads a map from the disk (in this case, our saved `map.yaml` generated durring the mapping operation), and publishes this map to the `map` topic.
 - **`amcl`** node from the [`amcl`](http://wiki.ros.org/amcl) package: The amcl node uses Adaptive Monte Carlo to localise the robot by subscribing to the laser scans from the robot and the `map` topic (published by the map_server node in this case).
