@@ -17,9 +17,9 @@ https://github.com/cynepton/home-service-robot
    ```
 
 2. **Clone the repository**
-```
-git clone https://github.com/cynepton/home-service-robot.git
-```
+   ```
+   git clone https://github.com/cynepton/home-service-robot.git
+   ```
 
 3. **Build the workspace**
    In the root of the `catkin_home` directory from the terminal, run
@@ -33,7 +33,7 @@ git clone https://github.com/cynepton/home-service-robot.git
 
 ## Project Build Process
 
-### Here's a list of the steps in this project - use it to track your progress!
+### Here's a list of the steps in this project - use it to track the progress!
 
 - Simulation setup
 - SLAM Testing
@@ -117,9 +117,9 @@ Here’s the list of the official ROS packages that you will need to grab, and o
 In your `workspaces` folder,
 
 ```
-mkdir catkin_ws && cd catkin_ws
+mkdir catkin_home && cd catkin_ws
 ```
-The `catkin_ws` name is arbitrary
+The `catkin_home` name is arbitrary
 
 ```
 mkdir src && cd src/
@@ -166,9 +166,9 @@ First navigate to the `src/` folder
   Create the package with:
   
   ```
-  catkin_create_pkg pick_objects roscpp std_msgs message_generation
+  catkin_create_pkg pick_objects roscpp move_base_msgs actionlib
   ```
-  We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I create the package with those dependencies.
+  We will be writing nodes in C++. Since I already know in advance that this package will contain C++ source code and messages, I created the package with those dependencies.
 
 - **add_markers**: You will write a node that model the object with a marker in rviz.
   Create the package with:
@@ -176,9 +176,9 @@ First navigate to the `src/` folder
   ```
   catkin_create_pkg add_markers roscpp std_msgs message_generation
   ```
-  We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I create the package with those dependencies.
+  We will be writing nodes in C++. Since we already know in advance that this package will contain C++ source code and messages, I created the package with those dependencies.
 
-Your `catkin_ws/src` directory should look as follows:
+Your `catkin_home/src` directory should look as follows:
 
 
     ├──                                # Official ROS packages
@@ -215,4 +215,175 @@ Your `catkin_ws/src` directory should look as follows:
 ## SLAM Testing
 The next task of this project is to autonomously map the environment you designed earlier with the Building Editor in Gazebo. But before you tackle autonomous mapping, it’s important to test if you are able to manually perform SLAM by teleoperating your robot. The goal of this step is to manually test SLAM.
 
-Write a shell script test_slam.sh that will deploy a turtlebot inside your environment, control it with keyboard commands, interface it with a SLAM package, and visualize the map in rviz. We will be using turtlebot for this project but feel free to use your personalized robot to make your project stand out!
+Write a shell script test_slam.sh that will deploy a turtlebot inside your environment, control it with keyboard commands, interface it with a SLAM package, and visualize the map in rviz. A personalised robot can also be used instead, and also a custom world.
+
+### SLAM Testing Task List
+To manually test SLAM, create a test_slam.sh shell script that launches these files:
+- The `turtlebot_world.launch` file to deploy a turtlebot in your enviroment
+- The `gmapping_demo.launch` or run slam_gmapping to perform SLAM
+- The `view_navigation.launch` to observe themap in rviz
+- The `keyboard_teleop.launch` to manually control the robot with keyboard commands
+
+### Run and Test
+Launch your test_slam.sh file, search for the `xterminal`  running the `keyboard_teleop` node, and start controlling your robot. There is no need to fully map your environment but just make sure everything is working fine. 
+Make sure to create a functional map of the environment which would then be used for localization and navigation tasks.
+
+Note that the `catkin_path` variable should be adjusted to your location of the catkin workspace folder
+
+### test_xlam.sh code 
+```
+#!/bin/sh
+
+#Set workspace location here 
+#######################################################################################
+catkin_path="~/workspace/catkin_home"
+#######################################################################################
+
+#The new_world.launch file to deploy the turtlebot in a custom world set by the user
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_gazebo new_world.launch" &
+sleep 5
+
+#The gmapping_demo.launch to perform SLAM
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_gazebo gmapping_demo.launch" &
+sleep 5
+
+#The view_navigation.launch to view the map in Rviz
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_rviz_launchers view_navigation.launch" &
+sleep 5
+
+#The keyboard_teleop.launch to manually control the robot with the computer keyboard
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_teleop keyboard_teleop.launch"
+```
+
+Save the file in the `src/scripts` directory of the `catkin_home` folder
+Navigate to the scripts folder and run 
+
+```
+chmod +x test_slam.sh
+```
+
+Finally, run the shell script with 
+```
+./test_slam.sh
+```
+
+Confirm that everything works fine, remember, there is no need to fully map the enviroment
+
+## Localization and Navigation Testing
+The next task of this project is to pick two different goals and test your robot's ability to reach them and orient itself with respect to them. We will refer to these goals as the pickup and drop off zones. This section is only for testing purposes to make sure our robot is able to reach these positions before autonomously commanding it to travel towards them.
+
+We will be using the ROS Navigation stack, which is based on the Dijkstra's, a variant of the Uniform Cost Search algorithm, to plan our robot trajectory from start to goal position. The ROS navigation stack permits your robot to avoid any obstacle on its path by re-planning a new trajectory once your robot encounters them. You are familiar with this navigation stack from the localization project where you interfaced with it and sent a specific goal for your robot to reach while localizing itself with AMCL. 
+
+### Navigation Test Task List
+Write a `test_navigation.sh` shell script that launches these files:
+- Add `turtlebot_world.launch` to deploy a turtlebot in the enviroment
+- Add `amcl_demo.launch` to localize the turtlebot
+- Add `view_navigation.launch` to observe the map in rviz
+
+### test_navigation.sh code 
+
+```
+#!/bin/sh
+
+#Set workspace location here 
+#######################################################################################
+catkin_path="~/workspace/catkin_home"
+#######################################################################################
+
+#The new_world.launch file to deploy the turtlebot in a custom world set by the user
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_gazebo new_world.launch" &
+sleep 5
+#The amcl_demo.launch to loalize the turtlebot
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_gazebo amcl_demo.launch" &
+sleep 5
+#The view_navigation.launch to view the map in Rviz
+xterm -e "cd ${catkin_path} && source devel/setup.bash && roslaunch turtlebot_rviz_launchers view_navigation.launch" &
+```
+
+Save the file in the `src/scripts` directory of the `catkin_home` folder
+Navigate to the scripts folder and run 
+
+```
+chmod +x test_navigation.sh
+```
+
+Finally, run the shell script with 
+```
+./test_navigation.sh
+```
+
+### Test it
+Once you launch all the nodes, you will initially see the particles around your robot, which means that AMCL recognizes the initial robot pose. Now, manually point out to two different goals, one at a time, and direct your robot to reach them and orient itself with respect to them. 
+
+## Navigation Goal Node
+
+**Reaching Multiple Goals**
+Earlier, you tested your robot capabilities in reaching multiple goals by manually commanding it to travel with the 2D NAV Goal arrow in rviz. Now, you will write a node that will communicate with the ROS navigation stack and autonomously send successive goals for your robot to reach. As mentioned earlier, the ROS navigation stack creates a path for your robot based on **Dijkstra's** algorithm, a variant of the **Uniform Cost Search** algorithm, while avoiding obstacles on its path.
+
+There is an official ROS tutorial that teaches you how to send a single goal position and orientation to the navigation stack. You are already familiar with this code from the Localization project where you used it to send your robot to a pre-defined goal. Check out the [tutorial](http://wiki.ros.org/navigation/Tutorials/SendingSimpleGoals) and go through its documentation.
+
+Here’s the C++ code of this node which sends a **single goal** for the robot to reach. 
+
+```
+#include <ros/ros.h>
+#include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib/client/simple_action_client.h>
+
+// Define a client for to send goal requests to the move_base server through a SimpleActionClient
+typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+
+int main(int argc, char** argv){
+  // Initialize the simple_navigation_goals node
+  ros::init(argc, argv, "simple_navigation_goals");
+
+  //tell the action client that we want to spin a thread by default
+  MoveBaseClient ac("move_base", true);
+
+  // Wait 5 sec for move_base action server to come up
+  while(!ac.waitForServer(ros::Duration(5.0))){
+    ROS_INFO("Waiting for the move_base action server to come up");
+  }
+
+  move_base_msgs::MoveBaseGoal goal;
+
+  // set up the frame parameters
+  goal.target_pose.header.frame_id = "base_link";
+  goal.target_pose.header.stamp = ros::Time::now();
+
+  // Define a position and orientation for the robot to reach
+  goal.target_pose.pose.position.x = 1.0;
+  goal.target_pose.pose.orientation.w = 1.0;
+
+   // Send the goal position and orientation for the robot to reach
+  ROS_INFO("Sending goal");
+  ac.sendGoal(goal);
+
+  // Wait an infinite time for the results
+  ac.waitForResult();
+
+  // Check if the robot reached its goal
+  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+    ROS_INFO("Hooray, the base moved 1 meter forward");
+  else
+    ROS_INFO("The base failed to move forward 1 meter for some reason");
+
+  return 0;
+}
+```
+
+### Customize the code
+You will need to modify this code and edit its node name to **pick_objects**. Then, edit the **frame_id** to `map`, since your fixed frame is the map and not base_link. After that, you will need to modify the code and include an extra goal position and orientation for your robot to reach.
+
+The first goal should be your desired pickup goal and the second goal should be your desired drop off goal. The robot has to travel to the desired pickup zone, display a message that it reached its destination, wait 5 seconds, travel to the desired drop off zone, and display a message that it reached the drop off zone.
+
+### Reaching Multiple Goals
+Follow these instructions to autonomously command the robot to travel to both desired pickup and drop off zones:
+- Create a pick_objects package with `move_base_msgs`, `actionlib`, and `roscpp` deependencies
+- Create a `pick_objects` C++ node
+- Edit C++ node and modify its `node name` and `frame_id`
+- Modify the C++ node and publish a second goal for the robot to reach
+- Display messsages to track if robot sucessfully reached both zones
+- Pause 5 seconds after reaching the pickup zone
+- Edit the `CMakeLists.txt` file and add `directories`, `executable` and `target_link_libraries`
+- Build the `catkin_home`
+- Create a `pick_objects.sh` script file that launches the **turtlebot**, **AMCL**, ********rviz** and the **pick_objects** node.
