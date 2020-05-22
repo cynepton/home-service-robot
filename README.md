@@ -135,7 +135,7 @@ Here’s the list of the official ROS packages that you will need to grab, and o
 In your `workspaces` folder,
 
 ```
-mkdir catkin_home && cd catkin_ws
+mkdir catkin_home && cd catkin_home
 ```
 The `catkin_home` name is arbitrary
 
