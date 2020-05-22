@@ -94,8 +94,8 @@ int main( int argc, char** argv )
       if (robot_pose=="arrived_at_drop-off"){
 
           // Set the drop-off location
-          marker.pose.position.x = -2.0;
-          marker.pose.position.y = 2.0;
+          marker.pose.position.x = -3.4;
+          marker.pose.position.y = 1.0;
           marker.pose.position.z = 0;
           marker.pose.orientation.w = 1.0;
 
